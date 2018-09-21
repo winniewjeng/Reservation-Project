@@ -43,7 +43,7 @@ struct Chart {
         return size_count;
     }
 
-    //IMPLEMENTED????????
+    //Implemented
 
     static T** allocate_twod(T** twod, int* sizes) {
 
@@ -62,21 +62,21 @@ struct Chart {
             col_walker++;
         }
 
-//        Testing purpose
-                T* c_w = sizes;
-                
-                for (int i = 0; i < num_rows; i++) {
-                    for (int j = 0; j < *c_w; j++) {
-                        twod[i][j] = j;
-                        cout << twod[i][j] << " ";
-                    }
-                    c_w++;
-                    cout << endl;
-                }
+        ////        Testing purpose
+        //                T* c_w = sizes;
+        //                
+        //                for (int i = 0; i < num_rows; i++) {
+        //                    for (int j = 0; j < *c_w; j++) {
+        //                        twod[i][j] = j;
+        //                        cout << twod[i][j] << " ";
+        //                    }
+        //                    c_w++;
+        //                    cout << endl;
+        //                }
         return twod;
     }
 
-    //IMPLEMENTED??????????
+    //Implemented
 
     static T** allocate_twod(int* sizes) {
         int num_rows = array_size(sizes); //const don't change this
@@ -93,62 +93,55 @@ struct Chart {
             row_walker++;
             col_walker++;
         }
-        
+
         return twod;
     }
 
-    //NYI--NEXT!!!
+    //Implemented
 
     static void init_twod_lab(T** twod, int* sizes, T init_item = T()) {
-        T** vertical_walker = twod;
-        int* horizontal_walker = sizes;
-        int num_rows = array_size(sizes);
-        //walk through the vertical spaces of the array
+
+        int num_rows = array_size(sizes); //stays the same
+        int num_cols; //will change
+
+        T** row_walker = twod;
+        T* col_walker = *row_walker;
+        T* num_cols_arr = sizes;
+
         for (int i = 0; i < num_rows; i++) {
-            //walk through the horizontal spaces of the array
-            while (horizontal_walker != (*sizes) + sizes) {
-                //initialize the space to 0;
-                *horizontal_walker = 0;
-                horizontal_walker++;
+            num_cols = *num_cols_arr;
+            for (int j = 0; j < num_cols; j++) {
+                *col_walker = 0;
+                cout << *col_walker << " ";
+                col_walker++;
             }
-            vertical_walker += (*sizes);
-            sizes++;
+            cout << endl;
+            num_cols_arr++;
         }
-
     }
 
-    //TESTING TO BE DELETED
+    //Temp print() before replacing ostream
 
-    static void init_and_print(T** twod, int* sizes) {
+    static void print(T** twod, int* sizes) {
 
-        T** vertical_walker = twod;
-        int* size_walker = sizes;
+        int num_rows = array_size(sizes); //stays the same
+        int num_cols; //will change
 
-        allocate_twod(twod, sizes);
-        //walk through the vertical spaces of the 2d array 
-        //        while(**vertical_walker != -1) {
-        //            //walker through the horizontal spaces of the 2d array
-        //            
-        //            cout << "hey" << endl;
-        //            cout << *size_walker << " ";
-        //            size_walker++;
-        //            //walker through the horizontal spaces of the 2d array
-        ////            while (size_walker != sizes + (*sizes)){
-        ////                cout << *horizontal_walker << " ";
-        ////                horizontal_walker++;
-        ////            }
-        ////            sizes++;
-        ////            horizontal_walker = sizes;
-        ////            cout << "\n" << *horizontal_walker<< endl;
-        ////            cout << endl;
-        ////            vertical_walker++;
-        //        }
-        //        int num_rows = array_size(sizes);
-        //        for (int i = 0; i < num_rows; i++) {
-        //            cout << i << endl;
-        //            //walk through the horizontal spaces of the array
-        //        }
+        T** row_walker = twod;
+        T* col_walker = *row_walker;
+        T* num_cols_arr = sizes;
+
+        for (int i = 0; i < num_rows; i++) {
+            num_cols = *num_cols_arr;
+            for (int j = 0; j < num_cols; j++) {
+                cout << *col_walker << " ";
+                col_walker++;
+            }
+            cout << endl;
+            num_cols_arr++;
+        }
     }
+
 
     //NOT YET IMPLEMENTED
     static T read_twod(T** twod, int row, int col);

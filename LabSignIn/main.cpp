@@ -10,16 +10,18 @@ using namespace std;
 int main() {
     
     int** p;
-    int sizes[] = {7, 3, 4, -1};
+    int sizes[] = {4, 3, 6, 3, 0, 3, 5, -1};
     
     p = Chart<int>::allocate_twod(sizes);
 
     int n = Chart<int>::array_size(sizes);
-//    cout << n << endl;
+    
+    Chart<int>::init_twod_lab(p, sizes, 0);
+    Chart<int>::print(p, sizes);
     
 //    Chart<int>::lab_menu();
     
-    Chart<int>::init_and_print(p, sizes); 
+    Chart<int>::print(p, sizes); 
 
     return 0;
 }
