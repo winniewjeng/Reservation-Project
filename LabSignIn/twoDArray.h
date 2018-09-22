@@ -11,7 +11,7 @@ using namespace std;
 
 template <typename T>
 struct Chart {
-    //Implemented -- print the sizes[] array 
+    //Implemented
 
     static void print_array(int* a) {
         int* array_walker = a;
@@ -24,41 +24,29 @@ struct Chart {
         cout << endl;
     }
 
-    //NOT YET!!--NEXT!!
+    //Implemented
 
-    static bool is_unoccupied(T** twod, int* sizes, int row, int col) {
+    static bool is_unoccupied(T** twod, int row, int col) {
 
         //        cout << "enter unoccupid" << endl;
-        //        int num_rows = array_size(sizes); //number of rows of the 2d array is fixed
-        //        int num_cols; //number of columns of the 2d array changes with each row
-        //
-        //        T** row_walker = twod;
-        //        T* col_walker = *row_walker;
-        //        T* sizes_walker = sizes;
-        //
-        //        //traverse through the rows
-        //        for (int i = 0; i < num_rows; i++) {
-        //            //number of columns changes for each row, as indicated by the sizes array
-        //            num_cols = *sizes_walker;
-        //            //traverse through the columns
-        //            for (int j = 0; j < num_cols; j++) {
-        //                //if detecting a non-zero spot (already logged-in), return false
-        //                if (*col_walker != 0) {
-        //                    cout << "this positinon is already occupied." << endl;
-        //                    return false;
-        //                }
-        //                col_walker++;
-        //            }
-        //            
-        //            sizes_walker++;
-        //        }
-        //        cout << "exit unoccup" << endl;
+
+        T** row_walker = twod;
+        row_walker += row;
+        T* col_walker = *row_walker;
+        col_walker += col;
+        if (*col_walker != 0) {
+            cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
+            return false;
+        }
+        
+        return true;
 
     }
 
     //Implemented
 
     static bool is_within_bound(int* sizes, int row, int col) {
+
         int num_rows = array_size(sizes);
 
         if (row > num_rows - 1 || row < 0) {
@@ -94,9 +82,9 @@ struct Chart {
 
     static void lab_menu() {
         int** p;
-        int sizes[] = {4, 3, 6, -1};
+        int sizes[] = {4, 5, 9, -1};
         char menu_selection;
-        int id_input; //just make it into array
+        int id; //just make it into array
         int row;
         int col;
 
@@ -120,19 +108,17 @@ struct Chart {
                 do {
                     print(p, sizes);
                     cout << endl << "id: ";
-                    cin >> id_input;
+                    cin >> id;
                     cout << "lab: ";
                     cin >> row;
                     cout << "station: ";
                     cin >> col;
                     cout << endl;
-                } while (!is_within_bound(sizes, row, col));
-
-                cout << "exit" << endl;
-                cout << row << " is row and " << col << " is col" << endl;
+                } while (is_within_bound(sizes, row, col) == false || is_unoccupied(p, row, col) == false);
 
                 //write id as the value of the double pointer twod
-
+                write_twod(p, row, col, id);
+                print(p, sizes);
 
             } else if (menu_selection == 'o') {
                 //do everything logout does
@@ -165,7 +151,7 @@ struct Chart {
     static T** allocate_twod(T** twod, int* sizes) {
 
         int num_rows = array_size(sizes); //const don't change this
-        int num_cols = 0; //initialize it. but it will keep on updating
+        int num_cols; //will keep on updating
 
         twod = new T*[num_rows];
 
@@ -244,16 +230,16 @@ struct Chart {
 
         T** row_walker = twod;
         T* col_walker = *row_walker;
-        T* num_cols_arr = sizes;
+        T* size_walker = sizes;
 
         for (int i = 0; i < num_rows; i++) {
-            num_cols = *num_cols_arr;
+            num_cols = *size_walker;
             for (int j = 0; j < num_cols; j++) {
                 cout << setw(4) << *col_walker;
                 col_walker++;
             }
             cout << endl;
-            num_cols_arr++;
+            size_walker++;
         }
     }
 
@@ -261,8 +247,21 @@ struct Chart {
     //NOT YET IMPLEMENTED
     static T read_twod(T** twod, int row, int col);
 
-    //NOT YET IMPLEMENTED
-    static void write_twod(T** twod, int row, int col, const T& item);
+    //under construction...
+
+    static void write_twod(T** twod, int row, int col, const T& item) {
+        
+        T** row_walker = twod;
+        row_walker += row;
+        cout << **row_walker << " is row_walker"<< endl;
+        T* col_walker = *row_walker;
+        cout << *col_walker << " is col_walker" << endl;
+        col_walker += col;
+        cout << *col_walker << " is *(col_walker + " << col << ")" << endl;
+        *col_walker = item;
+        
+        //[2][5] doesn't work? :(
+    }
 
     //NOT YET IMPLEMENTED
     static T& get_twod(T** twod, int row, int col);

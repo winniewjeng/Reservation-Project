@@ -9,8 +9,8 @@ using namespace std;
 
 int main() {
     
-    int** p;
-    int sizes[] = {4, 3, 6, -1};
+//    int** p;
+//    int sizes[] = {6, 3, 2, 6, -1};
 //    
 //    p = Chart<int>::allocate_twod(sizes);
 //
