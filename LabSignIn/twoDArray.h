@@ -16,6 +16,7 @@ struct Chart {
     static void print_array(int* a) {
         int* array_walker = a;
 
+        cout << "lab:";
         while (*array_walker != -1) {
             cout << setw(4) << *array_walker;
             array_walker++;
@@ -25,60 +26,55 @@ struct Chart {
 
     //NOT YET!!--NEXT!!
 
-    static bool index_is_unoccupied(T** twod, int* sizes, int row, int col) {
+    static bool is_unoccupied(T** twod, int* sizes, int row, int col) {
 
-        cout << "enter unoccupid" << endl;
-        int num_rows = array_size(sizes); //stays the same
-        int num_cols; //keep on updating for each row that you enter
+        //        cout << "enter unoccupid" << endl;
+        //        int num_rows = array_size(sizes); //number of rows of the 2d array is fixed
+        //        int num_cols; //number of columns of the 2d array changes with each row
+        //
+        //        T** row_walker = twod;
+        //        T* col_walker = *row_walker;
+        //        T* sizes_walker = sizes;
+        //
+        //        //traverse through the rows
+        //        for (int i = 0; i < num_rows; i++) {
+        //            //number of columns changes for each row, as indicated by the sizes array
+        //            num_cols = *sizes_walker;
+        //            //traverse through the columns
+        //            for (int j = 0; j < num_cols; j++) {
+        //                //if detecting a non-zero spot (already logged-in), return false
+        //                if (*col_walker != 0) {
+        //                    cout << "this positinon is already occupied." << endl;
+        //                    return false;
+        //                }
+        //                col_walker++;
+        //            }
+        //            
+        //            sizes_walker++;
+        //        }
+        //        cout << "exit unoccup" << endl;
 
-        T** row_walker = twod;
-        T* col_walker = *row_walker;
-        T* num_cols_arr = sizes;
-
-        for (int i = 0; i < num_rows; i++) {
-            num_cols = *num_cols_arr;
-            for (int j = 0; j < num_cols; j++) {
-                if (*col_walker != 0) {
-                    //                    cout << *col_walker <<" |";
-                    cout << "this positinon is already occupied." << endl;
-                    return false;
-                }
-                //                cout << endl;
-                col_walker++;
-            }
-            num_cols_arr++;
-        }
-        cout << "exit unoccup" << endl;
-
-        return true;
     }
 
-    static bool index_within_bound(int* sizes, int row, int col) {
+    //Implemented
 
-        cout << "enter index bound" << endl;
-        if (col < 0 || row < 0) {
-            return false;
-        }
-
+    static bool is_within_bound(int* sizes, int row, int col) {
         int num_rows = array_size(sizes);
-        cout << num_rows << endl;
-        cout << row << endl;
-        
-        if (row > num_rows) {
-            cout << "this row is messed up" << endl;
+
+        if (row > num_rows - 1 || row < 0) {
+            cout << "[" << row << "][" << col << "] is out-of-bound" << endl << endl;
             return false;
         }
 
-        int* size_walker = sizes;
-
-        while (*size_walker != -1) {
-            if (*size_walker == row && col > *size_walker) {
-                return false;
-            }
-            size_walker++;
+        //find column size
+        int* col_walker = sizes;
+        col_walker += row;
+        int num_cols = *col_walker;
+        if (col > num_cols - 1 || col < 0) {
+            cout << "[" << row << "][" << col << "] is out-of-bound" << endl << endl;
+            return false;
         }
 
-        cout << "exit index bount" << endl;
         return true;
     }
 
@@ -110,50 +106,40 @@ struct Chart {
         cout << "========================================" << endl << endl << "after init" << endl << endl;
         print(p, sizes);
         cout << endl;
-        cout << "log[i]n" << setw(10) << "log[o]ut" << setw(10) << "[e]xit: ";
-
         do {
+            cout << "log[i]n" << setw(10) << "log[o]ut" << setw(10) << "[e]xit: ";
             cin >> menu_selection;
-        } while (input_is_valid(menu_selection) == false);
 
-        cout << endl << "labs: ";
-        print_array(sizes);
-        cout << endl;
+            if (menu_selection == 'i') {
 
-        if (menu_selection == 'i') {
-            //do everything login does
+                cout << endl;
+                cout << "----LOG IN----" << endl;
+                print_array(sizes);
+                cout << endl;
+                //check if the indexes are valid (within bound, unoccupied)
+                do {
+                    print(p, sizes);
+                    cout << endl << "id: ";
+                    cin >> id_input;
+                    cout << "lab: ";
+                    cin >> row;
+                    cout << "station: ";
+                    cin >> col;
+                    cout << endl;
+                } while (!is_within_bound(sizes, row, col));
 
-            //take the id_num and store it inside an array
-            //take the lab num and store it inside the lab array
-            //take the station_num and store it inside the station array  
-            //OR ALTERNATIVELY
+                cout << "exit" << endl;
+                cout << row << " is row and " << col << " is col" << endl;
 
-            do {
-                cout << "id: ";
-                cin >> id_input;
-                cout << "lab: ";
-                cin >> row;
-                cout << "station: ";
-                cin >> col;
-                //                if (index_is_unoccupied(p, sizes, row, col) == false && index_within_bound(sizes, row, col) == false) {
-                //                    cout << "[" << row << "][" << col << "] is invalid. try again" << endl;
-                //                }
-            } while (index_is_unoccupied(p, sizes, row, col) == false || index_within_bound(sizes, row, col) == false);
-
-            cout << "exit" << endl;
-            //check if the index (lab, station) is valid
-            //place id as the value of the double pointer twod
+                //write id as the value of the double pointer twod
 
 
-        } else if (menu_selection == 'o') {
-            //do everything logout does
-        }
+            } else if (menu_selection == 'o') {
+                //do everything logout does
+            }
 
+        } while (!input_is_valid(menu_selection) || menu_selection != 'e');
 
-        //
-        //        cout << "id: " << endl;
-        //        cout << "lab: " << endl;
-        //        cout << "station: " << endl;
 
         //keep prompting the user to enter an lab number (i, row) and station number (j, col) unless exiting program
         //write_twod()
