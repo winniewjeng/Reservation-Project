@@ -10,6 +10,7 @@
 using namespace std;
 
 template <typename T>
+
 struct Chart {
     //Implemented
 
@@ -41,7 +42,7 @@ struct Chart {
             for (int j = 0; j < num_cols; ++j) {
                 if (row == i && col == j) {
                     if (*col_walker != 0) {
-                        cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
+                        cout << "[" << row << "][" << col << "] is occupied" << endl;
                         return false;
                     }
                 }
@@ -71,7 +72,7 @@ struct Chart {
         int num_rows = array_size(sizes);
 
         if (row > num_rows - 1 || row < 0) {
-            cout << "[" << row << "][" << col << "] is out-of-bound" << endl << endl;
+            cout << "[" << row << "][" << col << "] is out-of-bound" << endl;
             return false;
         }
 
@@ -80,7 +81,7 @@ struct Chart {
         col_walker += row;
         int num_cols = *col_walker;
         if (col > num_cols - 1 || col < 0) {
-            cout << "[" << row << "][" << col << "] is out-of-bound" << endl << endl;
+            cout << "[" << row << "][" << col << "] is out-of-bound" << endl;
             return false;
         }
 
@@ -104,12 +105,13 @@ struct Chart {
 
         return true;
     }
-
-    //NOT YET finished
-
-    static void lab_menu() {
+    
+    //NOT YET IMPLEMENTED
+    
+    static void plane_menu() {
+        
         int** p;
-        int sizes[] = {5, 4, 3, 2, -1};
+        int sizes[] = {5, 5, 5, 5, -1};
         char menu_selection;
         int id = 0; //just make it into array
         int row = 0;
@@ -117,11 +119,11 @@ struct Chart {
 
         p = allocate_twod(p, sizes);
 
-        init_twod_lab(p, sizes, 0);
+        init_twod(p, sizes, 0);
 
         cout << "========================================" << endl << endl << "after init" << endl << endl;
 
-        print(p, sizes);
+        print_plane(p, sizes);
 
         do {
             cout << "log[i]n" << setw(10) << "log[o]ut" << setw(10) << "e[x]it: ";
@@ -135,12 +137,12 @@ struct Chart {
                 print_array(sizes);
                 //check if the indexes are valid (within bound, unoccupied)
                 do {
-                    print(p, sizes);
+                    print_plane(p, sizes);
                     cout << "id: ";
                     cin >> id;
-                    cout << "lab: ";
+                    cout << "asile: ";
                     cin >> row;
-                    cout << "station: ";
+                    cout << "seat: ";
                     cin >> col;
                     cout << endl;
                 } while (is_within_bound(sizes, row, col) == false || is_unoccupied(p, sizes, row, col) == false);
@@ -149,14 +151,14 @@ struct Chart {
                 write_twod(p, sizes, row, col, id);
 
                 cout << id << " is logged in successfully" << endl;
-                print(p, sizes);
+                print_plane(p, sizes);
 
             } else if (tolower(menu_selection) == 'o') {
 
                 cout << endl;
                 cout << "----LOG OUT----" << endl;
                 print_array(sizes);
-                print(p, sizes);
+                print_plane(p, sizes);
                 //prompt user to enter 
 
                 cout << "id: ";
@@ -177,10 +179,89 @@ struct Chart {
                 //if id is NOT found to be logged in...do nothing
                 else {
                     cout << id << " is not signed in." << endl; 
+                }      
+                print_plane(p, sizes);
+
+            }
+
+        } while (!input_is_valid(menu_selection) || tolower(menu_selection) != 'x');
+    
+    }
+
+    //UNDER CONSTRUCTION
+
+    static void lab_menu() {
+        int** lab;
+        int sizes[] = {5, 4, 3, 2, -1};
+        char menu_selection;
+        int id = 0; //just make it into array
+        int row = 0;
+        int col = 0;
+
+        lab = allocate_twod(lab, sizes);
+
+        init_twod(lab, sizes, 0);
+
+        cout << "========================================" << endl << endl << "after init" << endl << endl;
+
+        print_lab(lab, sizes);
+
+        do {
+            cout << "log[i]n" << setw(10) << "log[o]ut" << setw(10) << "e[x]it: ";
+
+            cin >> menu_selection;
+
+            if (tolower(menu_selection) == 'i') {
+
+                cout << endl;
+                cout << "----LOG IN----" << endl;
+                print_array(sizes);
+                //check if the indexes are valid (within bound, unoccupied)
+                do {
+                    print_lab(lab, sizes);
+                    cout << "id: ";
+                    cin >> id;
+                    cout << "lab: ";
+                    cin >> row;
+                    cout << "station: ";
+                    cin >> col;
+                    cout << endl;
+                } while (is_within_bound(sizes, row, col) == false || is_unoccupied(lab, sizes, row, col) == false);
+
+                //write id as the value of the double pointer twod
+                write_twod(lab, sizes, row, col, id);
+
+                cout << id << " is logged in successfully" << endl;
+                print_lab(lab, sizes);
+
+            } else if (tolower(menu_selection) == 'o') {
+
+                cout << endl;
+                cout << "----LOG OUT----" << endl;
+                print_array(sizes);
+                print_lab(lab, sizes);
+                //prompt user to enter 
+
+                cout << "id: ";
+                cin >> id;
+                while (cin.fail()) {
+                    cin.clear();
+                    cin.ignore();
+                    cout << "Not a valid input. Try again." << endl;
+                    cin >> id;
                 }
                 
-                print(p, sizes);
-
+                //if id is found to be logged in...
+                if (search_twod(lab, sizes, id, row, col) == true) {
+                    //log id out by replacing the position with 0
+                    write_twod(lab, sizes, row, col, 0);   
+                    cout << id << " is logged out successfully" << endl;
+                }
+                //if id is NOT found to be logged in...do nothing
+                else {
+                    cout << id << " is not signed in." << endl; 
+                }      
+                print_lab(lab, sizes);
 
             }
 
@@ -257,7 +338,7 @@ struct Chart {
 
     //Implemented
 
-    static void init_twod_lab(T** twod, int* sizes, T init_item = T()) {
+    static void init_twod(T** twod, int* sizes, T init_item = T()) {
 
         int num_rows = array_size(sizes); //stays the same
         int num_cols; //keep on updating for each row that you enter
@@ -272,14 +353,13 @@ struct Chart {
                 *col_walker = 0;
                 col_walker++;
             }
-            cout << endl;
             num_cols_arr++;
         }
     }
 
     //Implemented
 
-    static void print(T** twod, int* sizes) {
+    static void print_lab(T** twod, int* sizes) {
 
         int num_rows = array_size(sizes); //stays the same
         int num_cols; //will change
@@ -300,6 +380,29 @@ struct Chart {
         }
         cout << endl;
     }
+    
+    static void print_plane(T** twod, int* sizes) {
+
+        int num_rows = array_size(sizes); //stays the same
+        int num_cols; //will change
+
+        T** row_walker = twod;
+        T* col_walker = *row_walker;
+        T* num_cols_arr = sizes;
+
+        for (int i = 0; i < num_rows; ++i) {
+            cout << "aisle " << i << ":";
+            num_cols = *num_cols_arr;
+            for (int j = 0; j < num_cols; j++) {
+                cout << setw(4) << *col_walker;
+                col_walker++;
+            }
+            cout << endl;
+            num_cols_arr++;
+        }
+        cout << endl;
+    }
+    
 
     //Implemented
 
@@ -365,8 +468,7 @@ struct Chart {
 
     static T& get_twod(T** twod, int sizes, int row, int col);
 
-    //UNDER Construction
-    //If key (id) is found in the twod, set row and col, return true
+    //Implemented
 
     static bool search_twod(T** twod, int* sizes, const T& key, int& row, int& col) {
 
