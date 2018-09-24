@@ -25,10 +25,10 @@ struct Chart {
         cout << endl;
     }
 
-    //Implemented ---EEERRRRROONNNNNEOOOOOOUUUUUUSSSSSSSSS
+    //Implemented
 
     static bool is_unoccupied(T** twod, int* sizes, int row, int col) {
-        
+
         int num_rows = array_size(sizes); //stays the same
         int num_cols; //keep on updating for each row that you enter
 
@@ -41,6 +41,7 @@ struct Chart {
             for (int j = 0; j < num_cols; ++j) {
                 if (row == i && col == j) {
                     if (*col_walker != 0) {
+                        cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
                         return false;
                     }
                 }
@@ -49,15 +50,15 @@ struct Chart {
             num_cols_arr++;
         }
 
-//        T** row_walker = twod;
-//        row_walker += row;
-//        T* col_walker = *row_walker;
-//        col_walker += col;
-//
-//        if (*col_walker != 0) {
-//            cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
-//            return false;
-//        }
+        //        T** row_walker = twod;
+        //        row_walker += row;
+        //        T* col_walker = *row_walker;
+        //        col_walker += col;
+        //
+        //        if (*col_walker != 0) {
+        //            cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
+        //            return false;
+        //        }
 
         return true;
 
@@ -86,11 +87,17 @@ struct Chart {
         return true;
     }
 
+    //    static bool is_digit(int input) {
+    //        return true;
+    //    }
+
     //Implemented
 
     static bool input_is_valid(char input) {
 
-        if (input != 'i' && input != 'o' && input != 'e') {
+        input = tolower(input);
+
+        if (input != 'i' && input != 'o' && input != 'x') {
             cout << "Not a valid input. Try again." << endl;
             return false;
         }
@@ -104,9 +111,9 @@ struct Chart {
         int** p;
         int sizes[] = {5, 4, 3, 2, -1};
         char menu_selection;
-        int id; //just make it into array
-        int row;
-        int col;
+        int id = 0; //just make it into array
+        int row = 0;
+        int col = 0;
 
         p = allocate_twod(p, sizes);
 
@@ -116,13 +123,12 @@ struct Chart {
 
         print(p, sizes);
 
-
         do {
-            cout << "log[i]n" << setw(10) << "log[o]ut" << setw(10) << "[e]xit: ";
+            cout << "log[i]n" << setw(10) << "log[o]ut" << setw(10) << "e[x]it: ";
 
             cin >> menu_selection;
 
-            if (menu_selection == 'i') {
+            if (tolower(menu_selection) == 'i') {
 
                 cout << endl;
                 cout << "----LOG IN----" << endl;
@@ -130,7 +136,7 @@ struct Chart {
                 //check if the indexes are valid (within bound, unoccupied)
                 do {
                     print(p, sizes);
-                    cout << endl << "id: ";
+                    cout << "id: ";
                     cin >> id;
                     cout << "lab: ";
                     cin >> row;
@@ -142,13 +148,43 @@ struct Chart {
                 //write id as the value of the double pointer twod
                 write_twod(p, sizes, row, col, id);
 
+                cout << id << " is logged in successfully" << endl;
                 print(p, sizes);
 
-            } else if (menu_selection == 'o') {
-                //do everything logout does
+            } else if (tolower(menu_selection) == 'o') {
+
+                cout << endl;
+                cout << "----LOG OUT----" << endl;
+                print_array(sizes);
+                print(p, sizes);
+                //prompt user to enter 
+
+                cout << "id: ";
+                cin >> id;
+                while (cin.fail()) {
+                    cin.clear();
+                    cin.ignore();
+                    cout << "Not a valid input. Try again." << endl;
+                    cin >> id;
+                }
+                
+                //if id is found to be logged in...
+                if (search_twod(p, sizes, id, row, col) == true) {
+                    //log id out by replacing the position with 0
+                    write_twod(p, sizes, row, col, 0);   
+                    cout << id << " is logged out successfully" << endl;
+                }
+                //if id is NOT found to be logged in...do nothing
+                else {
+                    cout << id << " is not signed in." << endl; 
+                }
+                
+                print(p, sizes);
+
+
             }
 
-        } while (!input_is_valid(menu_selection) || menu_selection != 'e');
+        } while (!input_is_valid(menu_selection) || tolower(menu_selection) != 'x');
     }
 
     //Implemented
@@ -265,7 +301,7 @@ struct Chart {
         cout << endl;
     }
 
-    //UNDER CONSTRUCTION
+    //Implemented
 
     static T read_twod(T** twod, int* sizes, int row, int col) {
 
@@ -325,11 +361,37 @@ struct Chart {
         //        *(col_walker) = item;
     }
 
-    //NOT YET IMPLEMENTED
-    static T& get_twod(T** twod, int row, int col);
+    //NOT SURE WHAT IT DOES?????????????????????
 
-    //NOT YET IMPLEMENTED
-    static bool search_twod(T** twod, int* sizes, const T& key, int& row, int& col);
+    static T& get_twod(T** twod, int sizes, int row, int col);
+
+    //UNDER Construction
+    //If key (id) is found in the twod, set row and col, return true
+
+    static bool search_twod(T** twod, int* sizes, const T& key, int& row, int& col) {
+
+        int num_rows = array_size(sizes); //stays the same
+        int num_cols; //keep on updating for each row that you enter
+
+        T** row_walker = twod;
+        T* col_walker = *row_walker;
+        T* num_cols_arr = sizes;
+
+        for (int i = 0; i < num_rows; ++i) {
+            num_cols = *num_cols_arr;
+            for (int j = 0; j < num_cols; ++j) {
+                if (*col_walker == key) {
+                    row = i;
+                    col = j;
+                    return true;
+                }
+                col_walker++;
+            }
+            num_cols_arr++;
+        }
+
+        return false;
+    }
 
     //NOT YET IMPLEMENTED
     static std::ostream& print_twod(T** twod, int* sizes, std::ostream& outs);
