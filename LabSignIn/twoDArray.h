@@ -25,19 +25,39 @@ struct Chart {
         cout << endl;
     }
 
-    //Implemented -erroneous. fix based on write() fixes
+    //Implemented ---EEERRRRROONNNNNEOOOOOOUUUUUUSSSSSSSSS
 
-    static bool is_unoccupied(T** twod, int row, int col) {
+    static bool is_unoccupied(T** twod, int* sizes, int row, int col) {
+        
+        int num_rows = array_size(sizes); //stays the same
+        int num_cols; //keep on updating for each row that you enter
 
         T** row_walker = twod;
-        row_walker += row;
         T* col_walker = *row_walker;
-        col_walker += col;
+        T* num_cols_arr = sizes;
 
-        if (*col_walker != 0) {
-            cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
-            return false;
+        for (int i = 0; i < num_rows; ++i) {
+            num_cols = *num_cols_arr;
+            for (int j = 0; j < num_cols; ++j) {
+                if (row == i && col == j) {
+                    if (*col_walker != 0) {
+                        return false;
+                    }
+                }
+                col_walker++;
+            }
+            num_cols_arr++;
         }
+
+//        T** row_walker = twod;
+//        row_walker += row;
+//        T* col_walker = *row_walker;
+//        col_walker += col;
+//
+//        if (*col_walker != 0) {
+//            cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
+//            return false;
+//        }
 
         return true;
 
@@ -89,7 +109,7 @@ struct Chart {
         int col;
 
         p = allocate_twod(p, sizes);
-        
+
         init_twod_lab(p, sizes, 0);
 
         cout << "========================================" << endl << endl << "after init" << endl << endl;
@@ -117,7 +137,7 @@ struct Chart {
                     cout << "station: ";
                     cin >> col;
                     cout << endl;
-                } while (is_within_bound(sizes, row, col) == false || is_unoccupied(p, row, col) == false);
+                } while (is_within_bound(sizes, row, col) == false || is_unoccupied(p, sizes, row, col) == false);
 
                 //write id as the value of the double pointer twod
                 write_twod(p, sizes, row, col, id);
@@ -129,10 +149,6 @@ struct Chart {
             }
 
         } while (!input_is_valid(menu_selection) || menu_selection != 'e');
-
-        //keep prompting the user to enter an lab number (i, row) and station number (j, col) unless exiting program
-        //write_twod()
-        //print_twod() to update the plane seats
     }
 
     //Implemented
@@ -249,8 +265,29 @@ struct Chart {
         cout << endl;
     }
 
-    //NOT YET IMPLEMENTED
-    static T read_twod(T** twod, int row, int col);
+    //UNDER CONSTRUCTION
+
+    static T read_twod(T** twod, int* sizes, int row, int col) {
+
+        int num_rows = array_size(sizes); //stays the same
+        int num_cols; //keep on updating for each row that you enter
+
+        T** row_walker = twod;
+        T* col_walker = *row_walker;
+        T* num_cols_arr = sizes;
+
+        for (int i = 0; i < num_rows; ++i) {
+            num_cols = *num_cols_arr;
+            for (int j = 0; j < num_cols; ++j) {
+                if (row == i && col == j) {
+                    return *col_walker;
+                }
+                col_walker++;
+            }
+            num_cols_arr++;
+        }
+
+    }
 
     //Implemented
 
