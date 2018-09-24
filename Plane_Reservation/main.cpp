@@ -16,7 +16,6 @@ using namespace std;
 
 int main() {
     
-
     Chart<int>::plane_menu();  
 
     return 0;
