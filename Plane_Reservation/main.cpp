@@ -6,13 +6,7 @@
 
 using namespace std;
 
-//Plane Functions:
-//
-//Use a dynamic two dimensional array of bools for the plane application
-//init
-//print 
-//reserve
-//cancel
+//Plane Project:
 
 int main() {
     
