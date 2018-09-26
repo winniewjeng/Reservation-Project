@@ -7,13 +7,12 @@
 
 using namespace std;
 
-//Lab SignIn Project
+//Lab Sign-In Project
 
 int main() {
     
     Chart<int>::lab_menu();
     
-
     return 0;
 }
 

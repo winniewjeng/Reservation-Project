@@ -12,13 +12,27 @@ using namespace std;
 template <typename T>
 
 struct Chart {
-    //Implemented
+    //Count the number of column spaces in a row
+
+    static int array_size(int* sizes) {
+
+        int* size_walker = sizes;
+        int size_count = 0;
+
+        while (*size_walker != -1) {
+            size_count++;
+            size_walker++;
+        }
+        return size_count;
+    }
+
+    //Prints the number of column spaces in a row
 
     static void print_array(int* a) {
 
         int* array_walker = a;
 
-        cout << "lab:";
+        cout << "sizes:";
         while (*array_walker != -1) {
             cout << setw(4) << *array_walker;
             array_walker++;
@@ -26,7 +40,7 @@ struct Chart {
         cout << endl;
     }
 
-    //Implemented
+    //Check if a position is already occupied
 
     static bool is_unoccupied(T** twod, int* sizes, int row, int col) {
 
@@ -41,6 +55,7 @@ struct Chart {
             num_cols = *num_cols_arr;
             for (int j = 0; j < num_cols; ++j) {
                 if (row == i && col == j) {
+                    //if the element at the position is not zero, the position is occupied
                     if (*col_walker != 0) {
                         cout << "[" << row << "][" << col << "] is occupied" << endl;
                         return false;
@@ -51,21 +66,11 @@ struct Chart {
             num_cols_arr++;
         }
 
-        //        T** row_walker = twod;
-        //        row_walker += row;
-        //        T* col_walker = *row_walker;
-        //        col_walker += col;
-        //
-        //        if (*col_walker != 0) {
-        //            cout << "[" << row << "][" << col << "] is occupied" << endl << endl;
-        //            return false;
-        //        }
-
         return true;
 
     }
 
-    //Implemented
+    //Check a position is outside of the boundary of the 2d array
 
     static bool is_within_bound(int* sizes, int row, int col) {
 
@@ -88,13 +93,14 @@ struct Chart {
         return true;
     }
 
+    //COME BACK AND WORK ON ME IF HAVE TIME!!
     //    static bool is_digit(int input) {
     //        return true;
     //    }
 
-    //Implemented
+    //Check if user inputs a valid char for the menu
 
-    static bool input_is_valid(char input) {
+    static bool input_is_valid_lab(char input) {
 
         input = tolower(input);
 
@@ -105,11 +111,21 @@ struct Chart {
 
         return true;
     }
-    
-    //NOT YET IMPLEMENTED
-    
+
+    static bool input_is_valid_plane(char input) {
+
+        input = tolower(input);
+
+        if (input != 'r' && input != 'c' && input != 'x') {
+            cout << "Not a valid input. Try again." << endl;
+            return false;
+        }
+
+        return true;
+    }
+
     static void plane_menu() {
-        
+
         int** p;
         int sizes[] = {5, 5, 5, 5, -1};
         char menu_selection;
@@ -126,37 +142,55 @@ struct Chart {
         print_plane(p, sizes);
 
         do {
-            cout << "log[i]n" << setw(10) << "log[o]ut" << setw(10) << "e[x]it: ";
+            cout << "[r]eserve" << setw(10) << "[c]ancel" << setw(10) << "e[x]it: ";
 
             cin >> menu_selection;
 
-            if (tolower(menu_selection) == 'i') {
+            if (tolower(menu_selection) == 'r') {
 
                 cout << endl;
-                cout << "----LOG IN----" << endl;
+                cout << "----RESERVATION----" << endl;
                 print_array(sizes);
                 //check if the indexes are valid (within bound, unoccupied)
                 do {
                     print_plane(p, sizes);
                     cout << "id: ";
                     cin >> id;
-                    cout << "asile: ";
+                    while (cin.fail()) {
+                        cin.clear();
+                        cin.ignore();
+                        cout << "Not a valid input. Try again. id: ";
+                        cin >> id;
+                    }
+                    cout << "aisle: ";
                     cin >> row;
+                    while (cin.fail()) {
+                        cin.clear();
+                        cin.ignore();
+                        cout << "Not a valid input. Try again. aisle: ";
+                        cin >> row;
+                    }
                     cout << "seat: ";
                     cin >> col;
+                    while (cin.fail()) {
+                        cin.clear();
+                        cin.ignore();
+                        cout << "Not a valid input. Try again. seat: ";
+                        cin >> col;
+                    }
                     cout << endl;
                 } while (is_within_bound(sizes, row, col) == false || is_unoccupied(p, sizes, row, col) == false);
 
                 //write id as the value of the double pointer twod
                 write_twod(p, sizes, row, col, id);
 
-                cout << id << " is logged in successfully" << endl;
+                cout << "a seat for id#" << id << " is successfully reserved at aisle " << row << " seat " << col << endl;
                 print_plane(p, sizes);
 
-            } else if (tolower(menu_selection) == 'o') {
+            } else if (tolower(menu_selection) == 'c') {
 
                 cout << endl;
-                cout << "----LOG OUT----" << endl;
+                cout << "----CANCELLATION----" << endl;
                 print_array(sizes);
                 print_plane(p, sizes);
                 //prompt user to enter 
@@ -166,29 +200,26 @@ struct Chart {
                 while (cin.fail()) {
                     cin.clear();
                     cin.ignore();
-                    cout << "Not a valid input. Try again." << endl;
+                    cout << "Not a valid input. Try again. id: ";
                     cin >> id;
                 }
-                
+
                 //if id is found to be logged in...
                 if (search_twod(p, sizes, id, row, col) == true) {
                     //log id out by replacing the position with 0
-                    write_twod(p, sizes, row, col, 0);   
-                    cout << id << " is logged out successfully" << endl;
-                }
-                //if id is NOT found to be logged in...do nothing
+                    write_twod(p, sizes, row, col, 0);
+                    cout << "the seat for id#" << id << " is successfully canceled" << endl;
+                }//if id is NOT found to be logged in...do nothing
                 else {
-                    cout << id << " is not signed in." << endl; 
-                }      
+                    cout << "reservation for id#" << id << " is not found" << endl;
+                }
                 print_plane(p, sizes);
 
             }
 
-        } while (!input_is_valid(menu_selection) || tolower(menu_selection) != 'x');
-    
-    }
+        } while (!input_is_valid_plane(menu_selection) || tolower(menu_selection) != 'x');
 
-    //UNDER CONSTRUCTION
+    }
 
     static void lab_menu() {
         int** lab;
@@ -218,13 +249,32 @@ struct Chart {
                 print_array(sizes);
                 //check if the indexes are valid (within bound, unoccupied)
                 do {
+
                     print_lab(lab, sizes);
                     cout << "id: ";
                     cin >> id;
+                    while (cin.fail()) {
+                        cin.clear();
+                        cin.ignore();
+                        cout << "Not a valid input. Try again. id: ";
+                        cin >> id;
+                    }
                     cout << "lab: ";
                     cin >> row;
+                    while (cin.fail()) {
+                        cin.clear();
+                        cin.ignore();
+                        cout << "Not a valid input. Try again. lab: ";
+                        cin >> row;
+                    }
                     cout << "station: ";
                     cin >> col;
+                    while (cin.fail()) {
+                        cin.clear();
+                        cin.ignore();
+                        cout << "Not a valid input. Try again. station: ";
+                        cin >> col;
+                    }
                     cout << endl;
                 } while (is_within_bound(sizes, row, col) == false || is_unoccupied(lab, sizes, row, col) == false);
 
@@ -247,42 +297,27 @@ struct Chart {
                 while (cin.fail()) {
                     cin.clear();
                     cin.ignore();
-                    cout << "Not a valid input. Try again." << endl;
+                    cout << "Not a valid input. Try again. id: ";
                     cin >> id;
                 }
-                
+
                 //if id is found to be logged in...
                 if (search_twod(lab, sizes, id, row, col) == true) {
                     //log id out by replacing the position with 0
-                    write_twod(lab, sizes, row, col, 0);   
+                    write_twod(lab, sizes, row, col, 0);
                     cout << id << " is logged out successfully" << endl;
-                }
-                //if id is NOT found to be logged in...do nothing
+                }//if id is NOT found to be logged in...do nothing
                 else {
-                    cout << id << " is not signed in." << endl; 
-                }      
+                    cout << id << " is not signed in." << endl;
+                }
                 print_lab(lab, sizes);
 
             }
 
-        } while (!input_is_valid(menu_selection) || tolower(menu_selection) != 'x');
+        } while (!input_is_valid_lab(menu_selection) || tolower(menu_selection) != 'x');
     }
 
-    //Implemented
-
-    static int array_size(int* sizes) {
-
-        int* size_walker = sizes;
-        int size_count = 0;
-
-        while (*size_walker != -1) {
-            size_count++;
-            size_walker++;
-        }
-        return size_count;
-    }
-
-    //Implemented
+    //Dynamically allocate space in the heap for the 2d array
 
     static T** allocate_twod(T** twod, int* sizes) {
 
@@ -300,22 +335,8 @@ struct Chart {
             row_walker++;
             col_walker++;
         }
-
-        //        //        Keep for Testing purpose
-        //                        T* c_w = sizes;
-        //                        
-        //                        for (int i = 0; i < num_rows; i++) {
-        //                            for (int j = 0; j < *c_w; j++) {
-        //                                twod[i][j] = j;
-        //                                cout << twod[i][j] << " ";
-        //                            }
-        //                            c_w++;
-        //                            cout << endl;
-        //                        }
         return twod;
     }
-
-    //Implemented
 
     static T** allocate_twod(int* sizes) {
         int num_rows = array_size(sizes); //const don't change this
@@ -336,7 +357,7 @@ struct Chart {
         return twod;
     }
 
-    //Implemented
+    //initialize the 2d array to zero to indicate unoccupied spaces
 
     static void init_twod(T** twod, int* sizes, T init_item = T()) {
 
@@ -356,8 +377,6 @@ struct Chart {
             num_cols_arr++;
         }
     }
-
-    //Implemented
 
     static void print_lab(T** twod, int* sizes) {
 
@@ -380,7 +399,7 @@ struct Chart {
         }
         cout << endl;
     }
-    
+
     static void print_plane(T** twod, int* sizes) {
 
         int num_rows = array_size(sizes); //stays the same
@@ -402,9 +421,8 @@ struct Chart {
         }
         cout << endl;
     }
-    
 
-    //Implemented
+    //Given a position, output the item/element occupying the position
 
     static T read_twod(T** twod, int* sizes, int row, int col) {
 
@@ -428,7 +446,7 @@ struct Chart {
 
     }
 
-    //Implemented
+    //Given a position, place an item to occupy that position in the 2d array
 
     static void write_twod(T** twod, int* sizes, int row, int col, const T& item) {
 
@@ -449,26 +467,37 @@ struct Chart {
             }
             num_cols_arr++;
         }
-        //DO NOT DELETE FOR FUTURE REFERENCE
-        //IT'S A THEORETICALLY CORRECT ALGORITHM
-        //NOT WORKING FOR THIS PARTICULAR 2D ARR OF POINTERS
-        //        T** row_walker = twod;
-        //        T** trow_walker = twod;
-        //        cout << trow_walker << endl;
-        //        cout << "the previous row is on " << **row_walker << endl;
-        //        row_walker += row;
-        //        cout << "the current row is on " << **row_walker << endl;
-        //        T* col_walker = *row_walker;
-        //        //        cout << "col_walker " << *col_walker << endl;
-        //        col_walker += col;
-        //        *(col_walker) = item;
     }
 
-    //NOT SURE WHAT IT DOES?????????????????????
+    //Honestly not too sure what it does...
+    //My guess is it takes a position, and returns the address of the 2d array
 
-    static T& get_twod(T** twod, int sizes, int row, int col);
+    static T& get_twod(T** twod, int* sizes, int row, int col) {
 
-    //Implemented
+        int num_rows = array_size(sizes); //stays the same
+        int num_cols; //will change
+
+        T** row_walker = twod;
+        T* col_walker = *row_walker;
+        T* num_cols_arr = sizes;
+
+        for (int i = 0; i < num_rows; ++i) {
+            cout << "aisle " << i << ":";
+            num_cols = *num_cols_arr;
+            for (int j = 0; j < num_cols; j++) {
+                col_walker++;
+            }
+            num_cols_arr++;
+        }
+        cout << endl;
+
+
+
+        return twod;
+
+    }
+
+    //Given a position, check if a key item is inside the 2d array
 
     static bool search_twod(T** twod, int* sizes, const T& key, int& row, int& col) {
 
@@ -491,13 +520,8 @@ struct Chart {
             }
             num_cols_arr++;
         }
-
         return false;
     }
-
-    //NOT YET IMPLEMENTED
-    static std::ostream& print_twod(T** twod, int* sizes, std::ostream& outs);
-
 };
 
 #endif /* TWODARRAY_H */
